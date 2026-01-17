@@ -8,11 +8,13 @@ define PROJECT_APP_EXTRA_KEYS
 	{broker_version_requirements, ["4.2.0"]}
 endef
 
-dep_amqp_client                = git_rmq-subfolder rabbitmq-erlang-client $(RABBITMQ_VERSION)
-dep_rabbit_common              = git_rmq-subfolder rabbitmq-common $(RABBITMQ_VERSION)
-dep_rabbit                     = git_rmq-subfolder rabbitmq-server $(RABBITMQ_VERSION)
-dep_rabbitmq_ct_client_helpers = git_rmq-subfolder rabbitmq-ct-client-helpers $(RABBITMQ_VERSION)
-dep_rabbitmq_ct_helpers        = git_rmq-subfolder rabbitmq-ct-helpers $(RABBITMQ_VERSION)
+RABBITMQ_REPO = https://github.com/rabbitmq/rabbitmq-server.git
+
+dep_amqp_client                = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/amqp_client
+dep_rabbit_common              = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbit_common
+dep_rabbit                     = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbit
+dep_rabbitmq_ct_client_helpers = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbitmq_ct_client_helpers
+dep_rabbitmq_ct_helpers        = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbitmq_ct_helpers
 
 DEPS = rabbit_common rabbit khepri khepri_mnesia_migration
 TEST_DEPS = rabbitmq_ct_helpers rabbitmq_ct_client_helpers amqp_client
