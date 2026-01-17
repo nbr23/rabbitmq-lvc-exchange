@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-RUN apt update && apt install -y \
+RUN apt update && apt install -y --no-install-recommends \
     build-essential \
     curl \
     git \
@@ -8,9 +8,10 @@ RUN apt update && apt install -y \
     make \
     rsync \
     zip \
+    p7zip-full \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 RUN add-apt-repository ppa:rabbitmq/rabbitmq-erlang && \
-    apt update && apt install -y elixir erlang && rm -rf /var/lib/apt/lists/*
+    apt update && apt install --no-install-recommends -y elixir erlang && rm -rf /var/lib/apt/lists/*
 

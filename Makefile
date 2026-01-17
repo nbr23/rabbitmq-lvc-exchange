@@ -8,13 +8,21 @@ define PROJECT_APP_EXTRA_KEYS
 	{broker_version_requirements, ["4.2.0"]}
 endef
 
+ERLANG_MK_TMP ?= $(CURDIR)/.erlang.mk
 RABBITMQ_REPO = https://github.com/rabbitmq/rabbitmq-server.git
+RMQ_MONOREPO = $(ERLANG_MK_TMP)/rabbitmq-server
 
-dep_amqp_client                = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/amqp_client
-dep_rabbit_common              = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbit_common
-dep_rabbit                     = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbit
-dep_rabbitmq_ct_client_helpers = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbitmq_ct_client_helpers
-dep_rabbitmq_ct_helpers        = git-subfolder $(RABBITMQ_REPO) $(RABBITMQ_VERSION) deps/rabbitmq_ct_helpers
+ifneq ($(filter distclean%,$(MAKECMDGOALS)),)
+SKIP_DEPS = 1
+endif
+
+ifeq ($(filter distclean% clean%,$(MAKECMDGOALS)),)
+ifeq ($(wildcard $(RMQ_MONOREPO)),)
+$(info Cloning RabbitMQ server repository...)
+$(shell git clone --depth 1 --branch $(RABBITMQ_VERSION) $(RABBITMQ_REPO) $(RMQ_MONOREPO) >&2)
+endif
+DEPS_DIR = $(RMQ_MONOREPO)/deps
+endif
 
 DEPS = rabbit_common rabbit khepri khepri_mnesia_migration
 TEST_DEPS = rabbitmq_ct_helpers rabbitmq_ct_client_helpers amqp_client
